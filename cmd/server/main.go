@@ -1,11 +1,26 @@
 package main
 
 import (
+	"log"
+	"net"
+
+	"github.com/PashaFedyushkin/GoProj/pkg/api"
+	"github.com/PashaFedyushkin/GoProj/pkg/auth"
+
 	"google.golang.org/grpc"
 )
 
 func main() {
 	s := grpc.NewServer()
-	srv := server.AUTHServer{}
+	srv := &auth.AUTHServer{}
+	api.RegisterAuthServer(s, srv)
 
+	l, err := net.Listen("tcp", ":8080")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := s.Serve(l); err != nil {
+		log.Fatal(err)
+	}
 }
