@@ -3,6 +3,7 @@ package service
 import (
 	"crypto/sha1"
 	"fmt"
+	"log"
 	"time"
 
 	project "github.com/PashaFedyushkin/GoProj"
@@ -53,4 +54,23 @@ func (s *AuthService) GenerateToken(username, password string) (string, error) {
 		user.Id,
 	})
 	return token.SignedString([]byte(signKey))
+}
+
+func (s *AuthService) ParseToken(accessToken string) (int, error) {
+	token, err := jwt.ParseWithClaims(accessToken, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			log.Fatal("invalid signing method")
+		}
+
+		return ([]byte(signKey)), nil
+	})
+	if err != nil {
+		return 0, err
+	}
+	claims, ok := token.Claims.(tokenClaims)
+	if !ok {
+		return 0, nil
+	}
+
+	return claims.UserId, nil
 }
