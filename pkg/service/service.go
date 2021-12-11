@@ -13,6 +13,7 @@ type Authorizaton interface {
 }
 
 type PlayGame interface {
+	LetsPlay(number int32) (string, error)
 }
 
 type Statistic interface {
@@ -27,5 +28,6 @@ type Service struct {
 func NewService(rep repos.Repos) *Service {
 	return &Service{
 		Authorizaton: NewAuthService(rep.Authorizaton),
+		PlayGame:     NewGameService(":8080"),
 	}
 }

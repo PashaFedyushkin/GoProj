@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package api;
+
+option go_package = "pkg/api";
+
+service Game {
+  rpc Game(GameRequest) returns (GameResponse){}
+}
+
+message GameRequest{
+  int32 req = 1;
+}
+
+message GameResponse {
+  string res = 1;
+}
+
